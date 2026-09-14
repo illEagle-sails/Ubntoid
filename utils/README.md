@@ -73,3 +73,20 @@ This intentionally stops after dependency provisioning (no `make`/build
 step) — its output (`$HOME/device_profile.env` and the populated
 `$HOME/app_dependencies/` category files) is meant to be consumed by a
 separate, later build/install step.
+
+## subleq_emulator.py
+
+A standalone, dependency-free **SUBLEQ (One Instruction Set Computer)
+emulator**, provided for architecture/education purposes — not integrated
+into the `udroid` install/runtime flow. SUBLEQ is a single-instruction ISA
+(`SUBLEQ A, B, C`: compute `Mem[B] = Mem[B] - Mem[A]`, then jump to `C` if the
+result is `<= 0`) that is Turing-complete on its own; higher-level operations
+like `MOV` and `ADD` are synthesized purely from sequences of that one
+instruction.
+
+The script runs two self-contained demos (`ADD` and `MOV` synthesis),
+printing a step-by-step trace of the emulated memory and program counter, and
+requires no external packages — just `python3 utils/subleq_emulator.py`.
+
+This is unrelated to running Ubuntu on Android; it's included here as a
+small, runnable toy interpreter/emulator example.
