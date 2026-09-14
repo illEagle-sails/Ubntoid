@@ -36,6 +36,36 @@ Review the category files it generates before/while it runs if you want to
 audit or prune what gets installed, and only run it in environments where
 mass package installation is intended and permitted.
 
+## ius_ultimate.sh
+
+The "ultimate edition" evolution of `ius_accelerated_v2.sh`. Same six
+categories and adaptive-batch/conflict-resolution install strategy, but with
+a different classification approach:
+
+- Instead of a single `awk` pass over `apt-cache dumpavail`'s streamed
+  output, it enumerates every known package name via `apt-cache pkgnames`,
+  then runs each one through `evaluate_and_route()`, which does an individual
+  `apt-cache show <pkg>` lookup and classifies it with Bash `[[ =~ ]]` regex
+  matching against name, description, and section.
+- This is slower (one `apt-cache show` subprocess per package in the entire
+  index) but easier to extend rule-by-rule, and it logs every skipped
+  conflict (including core-package conflicts) to `$HOME/failed_pkgs.txt`
+  with a reason, whereas `ius_accelerated_v2.sh` only logs plain install
+  failures.
+- Ends with a per-category summary count of how many packages were routed
+  and installed into each of the six domains.
+
+**Usage:**
+
+```bash
+bash utils/ius_ultimate.sh
+```
+
+Same caution as `ius_accelerated_v2.sh` applies: this pulls in a broad,
+keyword-matched package surface, including offensive-security/sandboxing
+tools if present in configured repos — review `$HOME/ius_categories/*.txt`
+before/while it runs if you want to audit or prune what gets installed.
+
 ## app_backend_deploy.sh
 
 A **pre-installation, device-specific dependency optimizer**. Unlike
